@@ -4,7 +4,7 @@ import io.github.PlatovD.exception.EdgeAlreadyExistsException;
 
 import java.util.Map;
 
-public class DefaultDirectedGraph<W extends Comparable<W>, T> extends AbstractGraph<W, T> {
+public class DefaultUndirectedGraph<W extends Comparable<W>, T> extends AbstractGraph<W, T> {
     @Override
     protected Vertex<T> createVertex(T value) {
         return new DefaultVertex<>(value);
@@ -24,14 +24,18 @@ public class DefaultDirectedGraph<W extends Comparable<W>, T> extends AbstractGr
     public void addEdge(T from, T to, W weight) {
         checkVerticesExist(from, to);
 
+        checkVerticesExist(from, to);
+
         Vertex<T> vertexFrom = vertices.get(from);
         Vertex<T> vertexTo = vertices.get(to);
-        Map<Vertex<T>, Edge<W, T>> adjacentMapForSource = getAdjacentMapForVertex(vertexFrom);
-        if (adjacentMapForSource.get(vertexTo) != null)
+        Map<Vertex<T>, Edge<W, T>> vertexFromAdjacencyMap = getAdjacentMapForVertex(vertexFrom);
+        Map<Vertex<T>, Edge<W, T>> vertexToAdjacencyMap = getAdjacentMapForVertex(vertexTo);
+        if (vertexFromAdjacencyMap.containsKey(vertexTo) || vertexToAdjacencyMap.containsKey(vertexFrom))
             throw new EdgeAlreadyExistsException("Edge already exists. Use set weight instead");
 
-        Edge<W, T> edge = createEdge(vertexFrom, vertexTo, weight);
-        adjacentMapForSource.put(vertices.get(to), edge);
+        Edge<W, T> edge = new DefaultEdge<>(vertexFrom, vertexTo, weight);
+        vertexFromAdjacencyMap.put(vertexTo, edge);
+        vertexToAdjacencyMap.put(vertexFrom, edge);
     }
 
     @Override
@@ -40,7 +44,10 @@ public class DefaultDirectedGraph<W extends Comparable<W>, T> extends AbstractGr
 
         Vertex<T> vertexFrom = vertices.get(from);
         Vertex<T> vertexTo = vertices.get(to);
-        Map<Vertex<T>, Edge<W, T>> adjacentMapForSource = getAdjacentMapForVertex(vertexFrom);
-        return adjacentMapForSource.remove(vertexTo) != null;
+        Map<Vertex<T>, Edge<W, T>> vertexFromAdjacencyMap = getAdjacentMapForVertex(vertexFrom);
+        Map<Vertex<T>, Edge<W, T>> vertexToAdjacencyMap = getAdjacentMapForVertex(vertexTo);
+        boolean deletedFrom = vertexFromAdjacencyMap.remove(vertexTo) != null;
+        boolean deletedTo = vertexToAdjacencyMap.remove(vertexFrom) != null;
+        return deletedFrom || deletedTo;
     }
 }

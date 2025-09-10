@@ -16,6 +16,15 @@ public abstract class AbstractGraph<W extends Comparable<W>, T> implements Graph
     }
 
     @Override
+    public boolean addVertex(T value) {
+        if (containsVertex(value)) return false;
+        Vertex<T> vertex = createVertex(value);
+        vertices.put(value, vertex);
+        adjacencyList.put(vertex, new HashMap<>());
+        return true;
+    }
+
+    @Override
     public boolean containsVertex(T value) {
         return vertices.containsKey(value);
     }
@@ -48,6 +57,18 @@ public abstract class AbstractGraph<W extends Comparable<W>, T> implements Graph
         adjacencyList.remove(vertices.get(value));
         vertices.remove(value);
         return true;
+    }
+
+    @Override
+    public void removeIncomingEdges(T value) {
+        checkVerticesExist(value);
+
+        Vertex<T> vertexDeletable = vertices.get(value);
+        for (Vertex<T> vertex : vertices.values()) {
+            Map<Vertex<T>, Edge<W, T>> adjacentMapForSource = getAdjacentMapForVertex(vertex);
+            if (adjacentMapForSource != null && adjacentMapForSource.containsKey(vertexDeletable))
+                removeEdge(vertex.getData(), vertexDeletable.getData());
+        }
     }
 
 
