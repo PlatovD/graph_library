@@ -24,8 +24,6 @@ public class DefaultUndirectedGraph<W extends Comparable<W>, T> extends Abstract
     public void addEdge(T from, T to, W weight) {
         checkVerticesExist(from, to);
 
-        checkVerticesExist(from, to);
-
         Vertex<T> vertexFrom = vertices.get(from);
         Vertex<T> vertexTo = vertices.get(to);
         Map<Vertex<T>, Edge<W, T>> vertexFromAdjacencyMap = getAdjacentMapForVertex(vertexFrom);
@@ -49,5 +47,10 @@ public class DefaultUndirectedGraph<W extends Comparable<W>, T> extends Abstract
         boolean deletedFrom = vertexFromAdjacencyMap.remove(vertexTo) != null;
         boolean deletedTo = vertexToAdjacencyMap.remove(vertexFrom) != null;
         return deletedFrom || deletedTo;
+    }
+
+    @Override
+    public GraphType type() {
+        return GraphType.UNDIRECTED;
     }
 }

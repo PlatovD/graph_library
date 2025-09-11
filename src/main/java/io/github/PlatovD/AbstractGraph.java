@@ -30,15 +30,15 @@ public abstract class AbstractGraph<W extends Comparable<W>, T> implements Graph
     }
 
     @Override
-    public Collection<T> getAllVertices() {
-        return Collections.unmodifiableSet(vertices.keySet());
+    public List<T> getAllVertices() {
+        return vertices.keySet().stream().toList();
     }
 
     @Override
-    public Collection<T> getAdjacentVertices(T value) {
+    public List<T> getAdjacentVertices(T value) {
         if (!containsVertex(value)) throw new VertexNotFoundException("Vertex " + value + " not exists");
         return getAdjacentMapForVertex(vertices.get(value)).keySet()
-                .stream().map(Vertex::getData).collect(Collectors.toUnmodifiableSet());
+                .stream().map(Vertex::getData).toList();
     }
 
     @Override
@@ -47,6 +47,17 @@ public abstract class AbstractGraph<W extends Comparable<W>, T> implements Graph
         return getAdjacentMapForVertex(vertices.get(value)).entrySet()
                 .stream().map(e -> createEntry(e.getKey().getData(), e.getValue().getWeight()))
                 .collect(Collectors.toUnmodifiableSet());
+    }
+
+    @Override
+    public boolean containsEdge(T from, T to) {
+        checkVerticesExist(from, to);
+
+        Vertex<T> vertexFrom = vertices.get(from);
+        Vertex<T> vertexTo = vertices.get(to);
+        Map<Vertex<T>, Edge<W, T>> adjacencyMap = getAdjacentMapForVertex(vertexFrom);
+        if (adjacencyMap == null) return false;
+        return adjacencyMap.containsKey(vertexTo);
     }
 
     @Override

@@ -43,4 +43,9 @@ public class DefaultDirectedGraph<W extends Comparable<W>, T> extends AbstractGr
         Map<Vertex<T>, Edge<W, T>> adjacentMapForSource = getAdjacentMapForVertex(vertexFrom);
         return adjacentMapForSource.remove(vertexTo) != null;
     }
+
+    @Override
+    public GraphType type() {
+        return GraphType.DIRECTED;
+    }
 }

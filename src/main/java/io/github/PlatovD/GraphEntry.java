@@ -11,12 +11,12 @@ public class GraphEntry<W, T> implements Graph.GraphEntry<W, T> {
 
     @Override
     public T getVertex() {
-        return null;
+        return vertex;
     }
 
     @Override
     public W getWeight() {
-        return null;
+        return weight;
     }
 
     @Override
