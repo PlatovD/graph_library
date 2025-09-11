@@ -1,7 +1,5 @@
 package io.github.PlatovD.algorithm;
 
-import io.github.PlatovD.DefaultDirectedGraph;
-import io.github.PlatovD.DefaultUndirectedGraph;
 import io.github.PlatovD.Graph;
 import io.github.PlatovD.GraphType;
 
